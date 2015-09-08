@@ -1,6 +1,6 @@
-# py3r ([Chinese version](README_zh.md))
+# py3r
 
-Py3r should have features like:
+Py3r 应该具备的主要功能特性：
 
   - GUI with 3D view
   - Manually add support like Simplify3D
