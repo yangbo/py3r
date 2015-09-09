@@ -17,7 +17,7 @@ Some research:
 
 ## Notes about Skeinforge
 
-When I first use Skeinforge with the command line 'python skeinforge.py test.stl' it popup 2 horrible window and I lost...
+When I first use Skeinforge with the command line 'python skeinforge.py test.stl' it pops up 2 horrible windows and I lost...
 
 To understand SkeinForge you need to read `documentation/skeinforge_application.skeinforge.html` first.
 Skeinforge process g-code with a tool chain, every tool in the chain just do one thing such as carve (slicing) and it's input comes from the output of the previous tool and it's output will be the input of next tool and so on.
