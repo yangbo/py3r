@@ -21,3 +21,20 @@ When I first use Skeinforge with the command line 'python skeinforge.py test.stl
 
 To understand SkeinForge you need to read `documentation/skeinforge_application.skeinforge.html` first.
 Skeinforge process g-code with a tool chain, every tool in the chain just do one thing such as carve (slicing) and it's input comes from the output of the previous tool and it's output will be the input of next tool and so on.
+
+I have to say the carved svg file ([a sample](minionfront_carve.svg)) is wonderful when open with a browser and switch to "Iso View".
+I never know that svg file can be used to build interactive GUI! Good job Enrique!
+
+## Source code reading notes
+
+Slicing code is in 'skeinforge_plugin/craft_plugin/carve.py', the doc is [Skeinforge Carve](http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Carve).
+
+On the Arcol Blog a method of deriving the layer thickness is posted.  That article "Machine Calibrating" is at:
+http://blog.arcol.hu/?p=157
+
+stl.py is the core code to implement function of slicing STL file.
+
+## Learned Python knowledge
+
+Programmatically import a module: importlib.import_module()
+
