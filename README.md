@@ -41,6 +41,68 @@ The returned object carving is an instance of TriangleMesh, so the svg_writer.ge
 
 Then program go to ```return CarveSkein().getCarvedSVG( carving, fileName, repository )```.
 
+The slicing code is in ```rotatedLoopLayers = carving.getCarveRotatedBoundaryLayers()```.
+That is TriangleMesh.getCarveRotatedBoundaryLayers() method.
+
+In file triangle_mesh.py, method getZAddExtruderPaths is the slicing implementation.
+```
+def getZAddExtruderPaths(self, z):
+	'Get next z and add extruder loops.'
+	settings.printProgress(len(self.rotatedLoopLayers), 'slice')
+	rotatedLoopLayer = euclidean.RotatedLoopLayer(z)
+	rotatedLoopLayer.loops = self.getLoopsFromMesh(self.zoneArrangement.getEmptyZ(z))
+	return getZAddExtruderPathsBySolidCarving(rotatedLoopLayer, self, z)
+
+def getLoopsFromMesh( self, z ):
+	'Get loops from a carve of a mesh.'
+	originalLoops = []
+	self.setEdgesForAllFaces()
+	if self.isCorrectMesh:
+		originalLoops = getLoopsFromCorrectMesh( self.edges, self.faces, self.getTransformedVertexes(), z )
+	if len( originalLoops ) < 1:
+		originalLoops = getLoopsFromUnprovenMesh( self.edges, self.faces, self.importRadius, self.getTransformedVertexes(), z )
+	loops = euclidean.getSimplifiedLoops(originalLoops, self.importRadius)
+	sortLoopsInOrderOfArea(True, loops)
+	return getOrientedLoops(loops)
+
+def getLoopsFromCorrectMesh( edges, faces, vertexes, z ):
+	'Get loops from a carve of a correct mesh.'
+	remainingEdgeTable = getRemainingEdgeTable(edges, vertexes, z)
+	remainingValues = remainingEdgeTable.values()
+	for edge in remainingValues:
+		if len( edge.faceIndexes ) < 2:
+			print('This should never happen, there is a hole in the triangle mesh, each edge should have two faces.')
+			print(edge)
+			print('Something will still be printed, but there is no guarantee that it will be the correct shape.' )
+			print('Once the gcode is saved, you should check over the layer with a z of:')
+			print(z)
+			return []
+	loops = []
+	while isPathAdded( edges, faces, loops, remainingEdgeTable, vertexes, z ):
+		pass
+	if euclidean.isLoopListIntersecting(loops):
+		print('Warning, the triangle mesh slice intersects itself in getLoopsFromCorrectMesh in triangle_mesh.')
+		print('Something will still be printed, but there is no guarantee that it will be the correct shape.')
+		print('Once the gcode is saved, you should check over the layer with a z of:')
+		print(z)
+		return []
+	return loops
+
+def getRemainingEdgeTable(edges, vertexes, z):
+	'Get the remaining edge hashtable.'
+	remainingEdgeTable = {}
+	if len(edges) > 0:
+		if edges[0].zMinimum == None:
+			for edge in edges:
+				setEdgeMaximumMinimum(edge, vertexes)
+	for edgeIndex in xrange(len(edges)):
+		edge = edges[edgeIndex]
+		if (edge.zMinimum < z) and (edge.zMaximum > z):
+			remainingEdgeTable[edgeIndex] = edge
+	return remainingEdgeTable
+
+```
+
 ## Learned Python knowledge
 
 Programmatically import a module: importlib.import_module()
