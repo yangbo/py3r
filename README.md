@@ -34,7 +34,19 @@ http://blog.arcol.hu/?p=157
 
 stl.py is the core code to implement function of slicing STL file.
 
+```
+carving = svg_writer.getCarving(fileName)
+```
+The returned object carving is an instance of TriangleMesh, so the svg_writer.getCarving() method is used to translate STL file to GNU TriangleMesh format.
+
+Then program go to ```return CarveSkein().getCarvedSVG( carving, fileName, repository )```.
+
 ## Learned Python knowledge
 
 Programmatically import a module: importlib.import_module()
+
+## Blogs
+
+- http://hydraraptor.blogspot.com about make 3d printer
+
 
